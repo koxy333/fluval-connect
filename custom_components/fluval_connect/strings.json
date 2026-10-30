@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Cloud connection settings",
+        "description": "Advanced setup: provide your authorized Fluval cloud broker instance and client credentials. These are not your Fluval account password. No manufacturer credentials are bundled with this integration. See the repository setup guide before continuing.",
+        "data": {
+          "instance_id": "Broker instance ID",
+          "access_key": "Client access key",
+          "signing_key": "Client signing key"
+        }
+      },
+      "account": {
+        "title": "Verify your Fluval account",
+        "description": "Sign in to identify lights belonging to your EU-region account. Your password and account token are used once and are not saved. Fluval may sign out another app session.",
+        "data": {
+          "email": "Fluval email",
+          "password": "Fluval password"
+        }
+      },
+      "device": {
+        "title": "Choose your aquarium",
+        "description": "Only Aquasky 3.0 lights returned by your account can be selected. Setup performs a read-only status check.",
+        "data": {
+          "device": "Aquasky light",
+          "name": "Aquarium name"
+        }
+      }
+    },
+    "error": {
+      "invalid_connection": "Check the broker instance ID and client credentials.",
+      "invalid_auth": "Fluval did not accept the account sign-in.",
+      "cannot_connect": "Could not read live status securely. Check connectivity, region and connection settings.",
+      "name_required": "Enter an aquarium name."
+    },
+    "abort": {
+      "already_configured": "This aquarium is already configured.",
+      "device_not_verified": "The aquarium has not been verified through its owner account.",
+      "no_supported_devices": "No supported Aquasky 3.0 Wi-Fi lights were returned by this EU account."
+    }
+  }
+}

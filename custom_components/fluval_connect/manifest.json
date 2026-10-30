@@ -1,0 +1,17 @@
+{
+  "domain": "fluval_connect",
+  "name": "Fluval Connect",
+  "codeowners": [
+    "@koxy333"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "frontend"
+  ],
+  "documentation": "https://github.com/koxy333/fluval-connect",
+  "integration_type": "device",
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/koxy333/fluval-connect/issues",
+  "requirements": [],
+  "version": "0.2.0"
+}

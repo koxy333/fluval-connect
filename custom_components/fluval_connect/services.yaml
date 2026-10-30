@@ -1,0 +1,30 @@
+set_auto_schedule:
+  name: Set Auto schedule
+  description: Update sunrise, sunset, night-off and day/night RGBW levels together. Times use the aquarium's local clock. Does not change mode or power.
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: fluval_connect
+    schedule:
+      required: true
+      description: Local HH:MM times; night_off null disables night-off. Day/night channel values are 0–100 percent.
+      example: '{"sunrise_start":"07:00","sunrise_end":"08:00","sunset_start":"17:00","sunset_end":"18:00","night_off":"20:00","day":{"red":100,"green":100,"blue":71,"white":100},"night":{"red":0,"green":0,"blue":5,"white":0}}'
+      selector:
+        object:
+set_pro_schedule:
+  name: Set Pro schedule
+  description: Replace the Pro timeline with 2–12 ordered points. Does not change mode or power. The complete previous timeline can be read from the Pro schedule sensor's points attribute.
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: fluval_connect
+    points:
+      required: true
+      description: Ordered list of points, each containing time (HH:MM), red, green, blue and white (0–100).
+      example: '[{"time":"08:00","red":0,"green":0,"blue":0,"white":0},{"time":"12:00","red":80,"green":80,"blue":57,"white":80},{"time":"20:00","red":0,"green":0,"blue":0,"white":0}]'
+      selector:
+        object:
