@@ -1,6 +1,10 @@
 {
   "domain": "fluval_connect",
   "name": "Fluval Connect",
+  "categories": [
+    "lighting",
+    "pets"
+  ],
   "codeowners": [
     "@koxy333"
   ],
