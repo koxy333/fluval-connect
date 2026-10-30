@@ -9,6 +9,7 @@ from homeassistant.components.http import StaticPathConfig
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import config_validation as cv
 from homeassistant.exceptions import HomeAssistantError
 import voluptuous as vol
 
@@ -16,6 +17,7 @@ from .protocol import FluvalClient
 from .cloud import validate_connection
 
 DOMAIN = "fluval_connect"
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 PLATFORMS = [Platform.LIGHT, Platform.NUMBER, Platform.SELECT, Platform.TIME, Platform.BUTTON, Platform.SENSOR]
 
 

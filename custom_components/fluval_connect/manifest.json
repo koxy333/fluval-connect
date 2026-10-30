@@ -6,7 +6,8 @@
   ],
   "config_flow": true,
   "dependencies": [
-    "frontend"
+    "frontend",
+    "http"
   ],
   "documentation": "https://github.com/koxy333/fluval-connect",
   "integration_type": "device",
