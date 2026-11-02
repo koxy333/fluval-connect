@@ -32,7 +32,7 @@ async def async_setup(hass, config):
     await hass.http.async_register_static_paths([
         StaticPathConfig("/fluval_connect_static", str(Path(__file__).parent / "frontend"), True)
     ])
-    frontend.add_extra_js_url(hass, "/fluval_connect_static/fluval-connect-card.js?v=0.2.0")
+    frontend.add_extra_js_url(hass, "/fluval_connect_static/fluval-connect-card.js?v=0.2.1")
     return True
 
 

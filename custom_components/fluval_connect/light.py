@@ -41,10 +41,19 @@ class FluvalAquariumLight(LightEntity):
 
     @property
     def is_on(self):
-        return self._hub.properties.get(104)
+        # The app exposes 104 and 110..113 in its Manual panel only. They
+        # are saved manual settings, not telemetry of Auto/Pro's live output.
+        return self._hub.properties.get(104) if self._hub.properties.get(103) == 0 else None
+
+    @property
+    def assumed_state(self):
+        return self._hub.properties.get(103) != 0
 
     @property
     def rgbw_color(self):
+        return self._manual_rgbw() if self._hub.properties.get(103) == 0 else None
+
+    def _manual_rgbw(self):
         levels = [self._hub.properties.get(key) for key in range(110, 114)]
         return tuple(round(v * 255 / 100) for v in levels) if all(type(v) is int and 0 <= v <= 100 for v in levels) else None
 
@@ -54,6 +63,8 @@ class FluvalAquariumLight(LightEntity):
 
     @property
     def effect(self):
+        if self._hub.properties.get(103) != 0:
+            return None
         value = self._hub.properties.get(109)
         return self.effect_list[value] if type(value) is int and 0 <= value < len(self.effect_list) else None
 
@@ -61,12 +72,15 @@ class FluvalAquariumLight(LightEntity):
     def extra_state_attributes(self):
         p = self._hub.properties
         return {"mode": {0: "Manual", 1: "Auto", 2: "Pro"}.get(p.get(103)),
+                "output_state_reported": p.get(103) == 0,
+                "manual_power": p.get(104),
+                "channel_percentages_scope": "manual_settings",
                 "channel_percentages": dict(zip(("red", "green", "blue", "white"), (p.get(k) for k in range(110, 114)))),
                 "saved_colour_presets": {str(n): list(p[104+n]) for n in range(1, 5) if isinstance(p.get(104+n), bytes)}}
 
     async def _power(self, target):
         try:
-            await self._hub.set_power(target)
+            await self._hub.set_properties({103: 0, 104: target})
         except (OSError, ValueError, TimeoutError) as err:
             raise HomeAssistantError("The aquarium did not confirm the requested light state") from err
 
@@ -74,9 +88,9 @@ class FluvalAquariumLight(LightEntity):
         if kwargs.get("brightness") == 0:
             await self._power(False)
             return
-        values = {104: True}
+        values = {103: 0, 104: True}
         if "rgbw_color" in kwargs or "brightness" in kwargs:
-            levels = kwargs.get("rgbw_color", self.rgbw_color)
+            levels = kwargs.get("rgbw_color", self._manual_rgbw())
             if levels is None:
                 raise HomeAssistantError("Read the current channel levels first")
             if "brightness" in kwargs:

@@ -56,3 +56,23 @@ test('invalid Pro order is rejected without a command and errors are visible',as
   await card._run('Test',async()=>{throw Error('Test unavailable');});
   assert.match(card.shadowRoot.innerHTML,/Test unavailable/);
 });
+test('Auto stays connected without claiming saved Manual power is live output',()=>{
+  const {card,calls}=fixture();
+  const light=card._entity('light'); light.state='unknown';
+  card._render();
+  assert.equal(card._available(),true);
+  assert.match(card.shadowRoot.innerHTML,/Auto schedule selected/);
+  assert.match(card.shadowRoot.innerHTML,/Scheduled · output not reported/);
+  assert.match(card.shadowRoot.innerHTML,/Saved Manual brightness/);
+  assert.doesNotMatch(card.shadowRoot.innerHTML,/Light is off/);
+  assert.equal(calls.length,0);
+});
+test('clock ticks do not replace the editor DOM',()=>{
+  const {card}=fixture();
+  card._hass.states['sensor.clock']={entity_id:'sensor.clock',state:'2026-01-01T00:00:00Z',attributes:{friendly_name:'Test aquarium Device clock'}};
+  card.hass=card._hass;
+  let renders=0; card._render=()=>renders++;
+  card._hass.states['sensor.clock'].state='2026-01-01T00:01:00Z';
+  card.hass=card._hass;
+  assert.equal(renders,0);
+});

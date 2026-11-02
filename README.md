@@ -13,7 +13,11 @@ Community integration and aquarium dashboard card for the **Wi-Fi Aquasky 3.0**,
 - Firmware, device clock, Auto and Pro schedule readouts, read-only scheduled weather.
 - Branded dark dashboard card with compact pastel panels and a responsive layout.
 
-Power changes preserve the current mode. Manual colour, brightness, preset and weather changes select Manual mode. Editing Auto or Pro schedules preserves mode and power. Commands wait up to 15 seconds for matching device reports. Clock/timezone, reset and firmware update commands are not exposed. A response confirms the device's reported setting, not independent measurement of emitted light.
+Power on/off is an explicit **Manual override**. Manual colour, brightness, preset and weather changes also select Manual mode. Select Auto or Pro to resume the light's saved schedule. Editing Auto or Pro schedules preserves mode and power. Commands wait up to 15 seconds for matching device reports. Clock/timezone, reset and firmware update commands are not exposed. A response confirms the device's reported setting, not independent measurement of emitted light.
+
+The Wi-Fi protocol exposes saved Manual power and RGBW settings; these are **not live output measurements in Auto/Pro**. In scheduled modes the light entity reports an unknown output state, while remaining available for control; the card shows the selected schedule and labels Manual brightness separately. It does not invent a measured brightness from the schedule.
+
+The ticking Device clock sensor is an optional diagnostic, disabled by default for new installations. Existing users can disable it under the entity's settings to stop new minute-by-minute Activity/Recorder entries. This does not stop the light's internal clock or its schedules. Clock ticks no longer refresh the card's editor. Previously recorded activity remains in Home Assistant's history.
 
 ## Install
 
@@ -53,7 +57,7 @@ For a standalone card installation, copy `frontend/fluval-connect-card.js` from 
 
 ## Validation and limitations
 
-Run `python -m unittest discover -s tests -v` and `node --test tests/card.test.cjs`. GitHub Actions also runs HACS validation and Home Assistant hassfest. Tests use synthetic device identifiers and mocked transport; they do not control an aquarium. The dashboard has been visually checked in Home Assistant, including narrow layouts, refresh, Pro draft editing and cancellation. Expanded writes have offline protocol and service-dispatch tests; physical validation of every control is still outstanding.
+Run `python -m unittest discover -s tests -v` and `node --test tests/card.test.cjs`. GitHub Actions also runs HACS validation and Home Assistant hassfest. Tests use synthetic device identifiers, a minimal Home Assistant entity surface and mocked transport; they do not control an aquarium. Regression coverage includes scheduled output versus Manual settings, explicit Manual power overrides, mode-only Auto selection and clock-driven card refreshes. The dashboard has been visually checked in Home Assistant, including narrow layouts, refresh, Pro draft editing and cancellation. Expanded writes have offline protocol and service-dispatch tests; physical validation of every control is still outstanding.
 
 If the light is unavailable, verify Wi-Fi in FluvalConnect, internet access and the selected cloud region. An Espressif router entry alone does not establish device identity. Report issues without credentials, tokens or full diagnostics containing private connection information.
 

@@ -8,7 +8,7 @@ from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.components.time import TimeEntity
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import DeviceInfo, Entity
+from homeassistant.helpers.entity import DeviceInfo, Entity, EntityCategory
 
 from . import DOMAIN
 from .models import clock, timeline
@@ -167,6 +167,8 @@ class FluvalStatus(FluvalEntity, SensorEntity):
                       "dynamic": ("Scheduled weather", "mdi:weather-partly-cloudy")}[kind]
         if kind == "clock":
             self._attr_device_class = SensorDeviceClass.TIMESTAMP
+            self._attr_entity_category = EntityCategory.DIAGNOSTIC
+            self._attr_entity_registry_enabled_default = False
         super().__init__(hass, entry, kind, name, icon)
 
     @property
