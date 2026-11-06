@@ -4,6 +4,18 @@ Community integration and aquarium dashboard card for the **Wi-Fi Aquasky 3.0**,
 
 **Experimental, advanced setup:** a working, authorized Fluval cloud connection profile is required. The project does not distribute manufacturer signing credentials or provide a way to obtain them. A Fluval account password alone is insufficient for a new installation. Other models, Bluetooth-only lights and other cloud regions are untested.
 
+**HACS catalogue status:** the [default catalogue submission](https://github.com/hacs/default/pull/12985) needs changes because there is no verified way for an ordinary owner to obtain the required connection profile. Until that is resolved, this remains a custom-repository integration for owners who already have a working authorized profile. Installing the files does not remove this prerequisite.
+
+## Screenshots
+
+Aquarium management: Fluval lighting, RGBW channels and saved schedules. Temperature and reservoir cards are excluded.
+
+![Fluval aquarium management with lighting and schedule controls](docs/images/aquarium-management.png)
+
+Home Assistant integration overview from the existing personal installation. Its legacy version label is not the current public release number; it does not demonstrate a new-user setup.
+
+![Fluval Connect integration overview showing one aquarium light and 31 entities](docs/images/integration-overview.png)
+
 ## Controls
 
 - Power and RGBW brightness, Manual / Auto / Pro modes.
@@ -23,13 +35,29 @@ The ticking Device clock sensor is an optional diagnostic, disabled by default f
 
 Requires Home Assistant 2026.3 or newer and internet access to the Fluval EU cloud. This uses MQTT over TLS; it is **not local Wi-Fi control**.
 
-1. In HACS, open **Custom repositories**, add `https://github.com/koxy333/fluval-connect` with category **Integration**, and download Fluval Connect. Alternatively copy `custom_components/fluval_connect` into your Home Assistant `custom_components` directory.
+### Connection profile prerequisite — read before downloading
+
+The profile contains the broker instance ID, access key and signing key for the Fluval cloud broker. These are separate from your Fluval account email/password and from your home Wi-Fi credentials. Running your own MQTT broker or creating an unrelated Alibaba Cloud account does not supply access to the broker used by the light.
+
+The currently supported source is a **working authorized profile you already possess**, including a private profile from an existing personal installation. Account sign-in in this integration discovers the owner's lights; it does not provision broker credentials. This project has not verified a self-service vendor portal, app export or account-only API that provides an owner with a new working profile. There are therefore no complete new-owner provisioning steps to document at present. If you do not already have a profile, stop here: this release cannot complete setup with your account password alone.
+
+For an existing version 1 installation:
+
+1. Back up Home Assistant.
+2. Privately copy its working `_private_cloud.json` **outside** the integration folder to `/config/fluval_connect_private.json` before replacing any files. Keep the backup out of public repositories and issue reports.
+3. Install the update and restart Home Assistant. The existing configuration entry migrates its selected device's profile; there is no need to create a duplicate entry.
+
+This migration preserves an existing working installation. It does not create credentials for a new owner. Default-catalogue eligibility requires a verified owner-accessible provisioning procedure or a tested account-only setup flow first.
+
+### Download and configure
+
+**Once accepted into the default HACS catalogue:** search for **Fluval Connect** in HACS and download it. It is **not currently listed**; the custom-repository route below is the available alternative for users who meet the profile prerequisite.
+
+1. In HACS, open **Custom repositories**, add `https://github.com/koxy333/fluval-connect` with category **Integration**, and download Fluval Connect. For a manual installation, copy `custom_components/fluval_connect` into your Home Assistant `custom_components` directory.
 2. Restart Home Assistant.
 3. Under **Settings → Devices & services → Add integration**, select **Fluval Connect**.
 4. Supply your authorized broker instance ID, access key and signing key. These remain in Home Assistant's configuration entry and must be treated as secrets.
 5. Sign into your Fluval account to verify ownership, then select your light. The password and sign-in token are used transiently and are not saved. Fluval may sign the phone app out when a new session starts. Setup performs a read-only connectivity check.
-
-Existing version 1 installations migrate their selected device's private profile into the configuration entry. Before replacing a personal installation through HACS, back up its `_private_cloud.json` outside the integration folder as `/config/fluval_connect_private.json`. Keep this backup private. Back up Home Assistant before updating.
 
 HACS custom repository installation is separate from inclusion in the default HACS catalogue. Catalogue availability is subject to HACS review.
 
